@@ -1,15 +1,3 @@
-<?php
-if ($_SERVER["REQUEST_METHOD"] == "POST") {
-  // フォームから送信されたデータを各変数に格納
-  $title = $_POST["title"];
-  $hint = $_POST["hint"];
-  $images1 = $_POST["images1"];
-  $images2 = $_POST["images2"];
-  $images3 = $_POST["images3"];
-  $images4 = $_POST["images4"];
-}
-
-?>
 <!DOCTYPE html>
 <html lang="ja">
 
@@ -127,8 +115,18 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         <span class="sr-only">次へ</span>
       </a>
     </div><!-- /.carousel -->
-
-    <h1><strong><?php echo $title; ?></strong></h1>
+    <div id="container" class="container">
+      <section class="eachMovieSection">
+        <h2>Now Playing</h2>
+        <ul class="horizontal_scroll" id="horizontal_scroll_nowPlaying">
+        </ul>
+      </section>
+      <section class="eachMovieSection">
+        <h2>Top Rated</h2>
+        <ul class="horizontal_scroll" id="horizontal_scroll_popular">
+        </ul>
+      </section>
+    </div>
 
 
     <!-- Modal -->
@@ -151,9 +149,39 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
       </div>
     </div>
 
+
+
+    <script>
+      const getNowPlayingURL = 'https://api.themoviedb.org/3/movie/now_playing?api_key=34e831bcf1973ff3609e1979aa68ccc3';
+
+      fetch(getNowPlayingURL)
+        .then(response => {
+          return response.json();
+        })
+        .then(data => {
+          data.results.map(movie => {
+            const nowPlayingMovie = new NowPlayingMovie(movie.id, movie.title,
+              movie.poster_path, movie.vote_average, movie.overview, movie.release_date);
+            nowPlayingMovies.push(nowPlayingMovie);
+            const row = document.createElement('li');
+            row.classList.add('horizontal_pic');
+            const poster = document.createElement('img');
+            poster.src = `https://image.tmdb.org/t/p/w300_and_h450_bestv2/${movie.poster_path}`;
+            const title = document.createElement('p');
+            title.textContent = movie.title;
+            horizontal_scroll_nowPlaying.appendChild(row);
+            row.appendChild(poster)
+            row.appendChild(title);
+          });
+        })
+        .catch(error => {
+          console.log('error');
+        });
+    </script>
     <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js" integrity="sha384-DfXdz2htPH0lsSSs5nCTpuj/zy4C+OGpamoFVy38MVBnE+IbbVYUew+OrCXaRkfj" crossorigin="anonymous"></script>
     <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js" integrity="sha384-Q6E9RHvbIyZFJoft+2mJbHaEWldlvI9IOYy5n3zV9zzTtmI3UksdQRVvoxMfooAo" crossorigin="anonymous"></script>
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/js/bootstrap.min.js" integrity="sha384-OgVRvuATP1z7JjHLkuOU7Xw704+h835Lr+6QL9UvYjZE3Ipu6Tp75j7Bh/kR0JKI" crossorigin="anonymous"></script>
+
 </body>
 
 </html>
