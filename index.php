@@ -68,7 +68,7 @@
                 <p class="card-text">サムネイルを表示。クリックすると作品詳細ページへ</p>
                 <div class="d-flex justify-content-between align-items-center">
                   <div class="btn-group">
-                    <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#exampleModal">見る</button>
+                    <a href="contents.php" class="btn btn-primary  active" role="button" aria-pressed="true">見る</a>
 
                   </div>
 

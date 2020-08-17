@@ -1,12 +1,16 @@
 <?php
 
-$apikey = "34e831bcf1973ff3609e1979aa68ccc3"; //TMDbのAPIキー
-$error = "";
 
 
-$url_Contents = file_get_contents("https://api.themoviedb.org/3/movie/218?api_key=34e831bcf1973ff3609e1979aa68ccc3&language=ja-JA");
+$url_Contents = file_get_contents("https://api.themoviedb.org/3/search/movie?api_key=34e831bcf1973ff3609e1979aa68ccc3&language=ja-JA&query=%E3%82%BF%E3%83%BC%E3%83%9F%E3%83%8D%E3%83%BC%E3%82%BF%E3%83%BC2&page=1&include_adult=false");
 $movieArray = json_decode($url_Contents, true);
-
+if ($movieArray) {
+  foreach ($movieArray['results'] as $record) {
+    $title = $record['title'];
+    $poster = $record['poster_path'];
+    $overview = $record['overview'];
+  }
+}
 ?>
 
 <!DOCTYPE html>
@@ -69,8 +73,7 @@ $movieArray = json_decode($url_Contents, true);
       </ol>
       <div class="carousel-inner">
         <div class="carousel-item active">
-          <svg class="bd-placeholder-img" width="100%" height="100%" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="xMidYMid slice">
-            <rect fill="#777" width="100%" height="100%" /></svg>
+          <img class="first-slide" src="https://image.tmdb.org/t/p/original/pC9vQ5miLgdHSPIsgfU5A9pcTpF.jpg" alt="First slide">
           <div class="container">
             <div class="carousel-caption text-left">
               <h1>画像1を表示</h1>
@@ -81,8 +84,7 @@ $movieArray = json_decode($url_Contents, true);
           </div>
         </div>
         <div class="carousel-item">
-          <svg class="bd-placeholder-img" width="100%" height="100%" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="xMidYMid slice">
-            <rect fill="#777" width="100%" height="100%" /></svg>
+          <img class="first-slide" src="https://image.tmdb.org/t/p/original/xKb6mtdfI5Qsggc44Hr9CCUDvaj.jpg" alt="Second slide">
           <div class="container">
             <div class="carousel-caption">
               <h1>画像2を表示</h1>
@@ -93,8 +95,7 @@ $movieArray = json_decode($url_Contents, true);
           </div>
         </div>
         <div class="carousel-item">
-          <svg class="bd-placeholder-img" width="100%" height="100%" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="xMidYMid slice">
-            <rect fill="#777" width="100%" height="100%" /></svg>
+          <img class="first-slide" src="https://image.tmdb.org/t/p/original/ztBeLd2UCbUATJ1cXwwHev3G3xX.jpg" alt="Third slide">
           <div class="container">
             <div class="carousel-caption text-right">
               <h1>画像3を表示</h1>
@@ -105,8 +106,7 @@ $movieArray = json_decode($url_Contents, true);
           </div>
         </div>
         <div class="carousel-item">
-          <svg class="bd-placeholder-img" width="100%" height="100%" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="xMidYMid slice">
-            <rect fill="#777" width="100%" height="100%" /></svg>
+          <img class="first-slide" src="https://image.tmdb.org/t/p/original/jUV2lPxhcQe4g6EEKyJT0F1QbrC.jpg" alt="Fourth slide">
           <div class="container">
             <div class="carousel-caption text-right">
               <h1>画像4を表示</h1>
@@ -126,7 +126,7 @@ $movieArray = json_decode($url_Contents, true);
         <span class="sr-only">次へ</span>
       </a>
     </div><!-- /.carousel -->
-    <form action="contents.php" method="post">
+    <form action='contents.php' method='post'>
       <div class="input-group col-6">
         <input type="text" class="form-control" name="answer" placeholder="回答を入力する" aria-describedby="basic-addon1">
         <div class="input-group-prepend">
@@ -134,83 +134,93 @@ $movieArray = json_decode($url_Contents, true);
         </div>
       </div>
     </form>
+    </br>
+    <div id="container">
+      <?php if (isset($_POST['answer'])) {
+        if ($_POST['answer'] == $title) {
+          echo '<h1>正解:' . $title . '</h1>';
+          echo '<img src="http://image.tmdb.org/t/p/w185/' . $poster . '">';
+          echo '<div id=img_footer>' . $overview . '</div>';
+        } else {
+          echo '<h1>不正解</h1>';
+        }
+      }
+      ?>
+      <!-- Modal -->
+      <div class="modal fade" id="modal-hint1" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+        <div class="modal-dialog" role="document">
+          <div class="modal-content">
+            <div class="modal-header">
+              <h5 class="modal-title" id="exampleModalLabel">ヒント①</h5>
+              <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                <span aria-hidden="true">&times;</span>
+              </button>
+            </div>
+            <div class="modal-body">
+              <p>1991年8月24日　日本公開</p>
+            </div>
+            <div class="modal-footer">
+              <button type="button" class="btn btn-secondary" data-dismiss="modal">閉じる</button>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="modal fade" id="modal-hint2" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+        <div class="modal-dialog" role="document">
+          <div class="modal-content">
+            <div class="modal-header">
+              <h5 class="modal-title" id="exampleModalLabel">ヒント②</h5>
+              <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                <span aria-hidden="true">&times;</span>
+              </button>
+            </div>
+            <div class="modal-body">
+              <p>主演・アーノルドシュワルツェネッガー</p>
+            </div>
+            <div class="modal-footer">
+              <button type="button" class="btn btn-secondary" data-dismiss="modal">閉じる</button>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="modal fade" id="modal-hint3" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+        <div class="modal-dialog" role="document">
+          <div class="modal-content">
+            <div class="modal-header">
+              <h5 class="modal-title" id="exampleModalLabel">ヒント③</h5>
+              <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                <span aria-hidden="true">&times;</span>
+              </button>
+            </div>
+            <div class="modal-body">
+              <p>デデンデンデデン♪</p>
+            </div>
+            <div class="modal-footer">
+              <button type="button" class="btn btn-secondary" data-dismiss="modal">閉じる</button>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="modal fade" id="modal-hint4" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+        <div class="modal-dialog" role="document">
+          <div class="modal-content">
+            <div class="modal-header">
+              <h5 class="modal-title" id="exampleModalLabel">ヒント④</h5>
+              <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                <span aria-hidden="true">&times;</span>
+              </button>
+            </div>
+            <div class="modal-body">
+              <p>I' ll be back</p>
+            </div>
+            <div class="modal-footer">
+              <button type="button" class="btn btn-secondary" data-dismiss="modal">閉じる</button>
+            </div>
+          </div>
+        </div>
+      </div>
 
-
-    <!-- Modal -->
-    <div class="modal fade" id="modal-hint1" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
-      <div class="modal-dialog" role="document">
-        <div class="modal-content">
-          <div class="modal-header">
-            <h5 class="modal-title" id="exampleModalLabel">ヒント①</h5>
-            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-              <span aria-hidden="true">&times;</span>
-            </button>
-          </div>
-          <div class="modal-body">
-            <p>1991年8月24日　日本公開</p>
-          </div>
-          <div class="modal-footer">
-            <button type="button" class="btn btn-secondary" data-dismiss="modal">閉じる</button>
-          </div>
-        </div>
-      </div>
-    </div>
-    <div class="modal fade" id="modal-hint2" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
-      <div class="modal-dialog" role="document">
-        <div class="modal-content">
-          <div class="modal-header">
-            <h5 class="modal-title" id="exampleModalLabel">ヒント②</h5>
-            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-              <span aria-hidden="true">&times;</span>
-            </button>
-          </div>
-          <div class="modal-body">
-            <p>主演・アーノルドシュワルツェネッガー</p>
-          </div>
-          <div class="modal-footer">
-            <button type="button" class="btn btn-secondary" data-dismiss="modal">閉じる</button>
-          </div>
-        </div>
-      </div>
-    </div>
-    <div class="modal fade" id="modal-hint3" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
-      <div class="modal-dialog" role="document">
-        <div class="modal-content">
-          <div class="modal-header">
-            <h5 class="modal-title" id="exampleModalLabel">ヒント③</h5>
-            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-              <span aria-hidden="true">&times;</span>
-            </button>
-          </div>
-          <div class="modal-body">
-            <p>デデンデンデデン♪</p>
-          </div>
-          <div class="modal-footer">
-            <button type="button" class="btn btn-secondary" data-dismiss="modal">閉じる</button>
-          </div>
-        </div>
-      </div>
-    </div>
-    <div class="modal fade" id="modal-hint4" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
-      <div class="modal-dialog" role="document">
-        <div class="modal-content">
-          <div class="modal-header">
-            <h5 class="modal-title" id="exampleModalLabel">ヒント④</h5>
-            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-              <span aria-hidden="true">&times;</span>
-            </button>
-          </div>
-          <div class="modal-body">
-            <p>I'll be back</p>
-          </div>
-          <div class="modal-footer">
-            <button type="button" class="btn btn-secondary" data-dismiss="modal">閉じる</button>
-          </div>
-        </div>
-      </div>
-    </div>
-
-    <div class="modal fade bd-example-modal-lg" id="answer" tabindex="-1" role="dialog" aria-labelledby="imageModal1" aria-hidden="true">
+      <!-- <div class="modal fade bd-example-modal-lg" id="answer" tabindex="-1" role="dialog" aria-labelledby="imageModal1" aria-hidden="true">
       <div class="modal-dialog  modal-lg" role="document">
         <div class="modal-content">
           <div class="modal-header">
@@ -220,24 +230,24 @@ $movieArray = json_decode($url_Contents, true);
             </button>
           </div>
           <div class="modal-body">
-            <img src="<?php echo 'https://image.tmdb.org/t/p/w300_and_h450_bestv2/' . $movieArray["poster_path"]; ?>">
-            <?php echo "<strong>" . $movieArray["title"] . "</strong>" ?>
-            <?php echo $movieArray["overview"]; ?>
           </div>
+          <div class="modal-img_footer"> -->
+
+      <!-- </div>
           <div class="modal-footer">
             <button type="button" class="btn btn-secondary" data-dismiss="modal">閉じる</button>
           </div>
         </div>
       </div>
-    </div>
+    </div> -->
 
 
 
 
 
-    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js" integrity="sha384-DfXdz2htPH0lsSSs5nCTpuj/zy4C+OGpamoFVy38MVBnE+IbbVYUew+OrCXaRkfj" crossorigin="anonymous"></script>
-    <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js" integrity="sha384-Q6E9RHvbIyZFJoft+2mJbHaEWldlvI9IOYy5n3zV9zzTtmI3UksdQRVvoxMfooAo" crossorigin="anonymous"></script>
-    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/js/bootstrap.min.js" integrity="sha384-OgVRvuATP1z7JjHLkuOU7Xw704+h835Lr+6QL9UvYjZE3Ipu6Tp75j7Bh/kR0JKI" crossorigin="anonymous"></script>
+      <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js" integrity="sha384-DfXdz2htPH0lsSSs5nCTpuj/zy4C+OGpamoFVy38MVBnE+IbbVYUew+OrCXaRkfj" crossorigin="anonymous"></script>
+      <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js" integrity="sha384-Q6E9RHvbIyZFJoft+2mJbHaEWldlvI9IOYy5n3zV9zzTtmI3UksdQRVvoxMfooAo" crossorigin="anonymous"></script>
+      <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/js/bootstrap.min.js" integrity="sha384-OgVRvuATP1z7JjHLkuOU7Xw704+h835Lr+6QL9UvYjZE3Ipu6Tp75j7Bh/kR0JKI" crossorigin="anonymous"></script>
 </body>
 
 </html>
